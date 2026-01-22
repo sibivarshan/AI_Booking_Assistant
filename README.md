@@ -1,16 +1,15 @@
-# AI Booking Assistant 📅
+# AI Booking Assistant
 
 An AI-powered booking assistant with RAG (Retrieval Augmented Generation) capabilities, built with Streamlit and LangChain.
 
 ## Features
 
-- 🤖 **AI Chat Interface** - Conversational booking assistant powered by Google Gemini
-- 📚 **RAG Support** - Upload PDFs to enhance the assistant's knowledge
-- 📅 **Smart Booking** - Multi-turn dialogue for collecting booking details
-- 📧 **Email Confirmations** - Automatic confirmation emails via SendGrid
-- 📊 **Admin Dashboard** - View, filter, and manage all bookings
-- 💾 **Persistent Storage** - SQLite database for customers and bookings
-
+- **AI Chat Interface** - Conversational booking assistant powered by Google Gemini
+- **RAG Support** - Upload PDFs to enhance the assistant's knowledge
+-  **Smart Booking** - Multi-turn dialogue for collecting booking details
+-  **Email Confirmations** - Automatic confirmation emails via SendGrid
+-  **Admin Dashboard** - View, filter, and manage all bookings
+- **Persistent Storage** - SQLite database for customers and bookings
 ## Quick Start
 
 ### 1. Install Dependencies
