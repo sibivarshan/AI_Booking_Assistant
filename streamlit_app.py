@@ -164,26 +164,33 @@ def render_sidebar():
         if uploaded_files:
             if st.button("📤 Process Uploaded Files", type="primary"):
                 with st.spinner("Processing files..."):
+                    import requests
+                    
+                    # API endpoint - change to your deployed URL
+                    API_URL = "https://ai-booking-assistant-svqo.onrender.com/upload"
+                    
                     success_count = 0
                     for file in uploaded_files:
                         try:
-                            # Save temporarily and process
-                            import tempfile
-                            with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp:
-                                tmp.write(file.read())
-                                tmp_path = Path(tmp.name)
+                            # Reset file pointer to beginning
+                            file.seek(0)
                             
-                            result = st.session_state.data_ingestion.add_single_file(tmp_path)
+                            # Send file to API endpoint
+                            files = {"file": (file.name, file.read(), "application/pdf")}
+                            response = requests.post(API_URL, files=files, timeout=120)
                             
-                            # Clean up
-                            tmp_path.unlink(missing_ok=True)
-                            
-                            if result["success"]:
+                            if response.status_code == 200:
+                                result = response.json()
                                 success_count += 1
                                 st.success(f"✅ {file.name}: Added {result['documents_added']} chunks")
                             else:
-                                st.error(f"❌ {file.name}: {result['error']}")
+                                error_detail = response.json().get("detail", response.text)
+                                st.error(f"❌ {file.name}: {error_detail}")
                         
+                        except requests.exceptions.Timeout:
+                            st.error(f"❌ {file.name}: Request timed out. Try again.")
+                        except requests.exceptions.RequestException as e:
+                            st.error(f"❌ {file.name}: Connection error - {str(e)}")
                         except Exception as e:
                             st.error(f"❌ {file.name}: {str(e)}")
                     

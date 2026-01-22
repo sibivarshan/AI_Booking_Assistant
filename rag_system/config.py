@@ -15,7 +15,7 @@ CHUNK_SIZE = 500
 CHUNK_OVERLAP = 50
 
 # API settings
-API_HOST = "0.0.0.0"
+API_HOST = "https://ai-booking-assistant-svqo.onrender.com"
 API_PORT = 8000
 TOP_K_RESULTS = 1
 
