@@ -3,7 +3,7 @@ import re
 from typing import List, Dict, Any
 from pathlib import Path
 import PyPDF2
-from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 from .config import CHUNK_SIZE, CHUNK_OVERLAP
 
 class DataProcessor:

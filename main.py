@@ -396,20 +396,39 @@ async def health_check():
         }
 
 if __name__ == "__main__":
-    print("🏏 Starting booking RAG FastAPI Server...")
-    print("📡 API will be available at: http://localhost:8000")
-    print("📖 Interactive docs at: http://localhost:8000/docs")
-    print("🔍 Endpoints:")
-    print("  - POST /search           : Search documents")
-    print("  - GET  /context/{doc_id} : Get full context")
-    print("  - GET  /stats            : Get statistics")
-    print("  - POST /upload           : Upload new files")
-    print("  - POST /ingest           : Ingest all data")
-    print("  - GET  /health           : Health check")
+    import argparse
     
-    uvicorn.run(
-        "__main__:app",
-        host="0.0.0.0",
-        port=8000,
-        reload=True
-    )
+    parser = argparse.ArgumentParser(description="Booking RAG FastAPI Server")
+    parser.add_argument("--list-tools", action="store_true", help="List all available agent tools")
+    args = parser.parse_args()
+    
+    if args.list_tools:
+        from agent.tools import TOOL_MAP
+        print("\n🔧 Available Agent Tools:")
+        print("=" * 50)
+        for name, func in TOOL_MAP.items():
+            doc = func.__doc__ or "No description"
+            # Get first line of docstring
+            first_line = doc.strip().split('\n')[0]
+            print(f"\n📌 {name}")
+            print(f"   {first_line}")
+        print("\n" + "=" * 50)
+        print(f"Total: {len(TOOL_MAP)} tools available")
+    else:
+        print("🏏 Starting booking RAG FastAPI Server...")
+        print("📡 API will be available at: http://localhost:8000")
+        print("📖 Interactive docs at: http://localhost:8000/docs")
+        print("🔍 Endpoints:")
+        print("  - POST /search           : Search documents")
+        print("  - GET  /context/{doc_id} : Get full context")
+        print("  - GET  /stats            : Get statistics")
+        print("  - POST /upload           : Upload new files")
+        print("  - POST /ingest           : Ingest all data")
+        print("  - GET  /health           : Health check")
+        
+        uvicorn.run(
+            "__main__:app",
+            host="0.0.0.0",
+            port=8000,
+            reload=True
+        )
