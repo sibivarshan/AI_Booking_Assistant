@@ -28,7 +28,7 @@ GOOGLE_API_KEY=your_google_api_key_here
 SENDGRID_API_KEY=your_sendgrid_api_key_here
 FROM_EMAIL=your_email@example.com
 ```
-
+kk
 ### 3. Run the Application
 
 ```bash
