@@ -40,12 +40,64 @@ def get_data_ingestion():
 def search_knowledge_base(query: str) -> str:
     """
     Search the knowledge base for information related to the user's query.
+    Calls the remote API to ensure consistency with uploaded documents.
     
     Args:
         query: The user's question or search query
         
     Returns:
         Relevant information from the knowledge base
+    """
+    import requests
+    
+    # Use the same remote API as the upload function
+    API_URL = "https://ai-booking-assistant-svqo.onrender.com/search"
+    
+    try:
+        response = requests.post(
+            API_URL,
+            json={"query": query, "top_k": 3},
+            timeout=30
+        )
+        
+        if response.status_code != 200:
+            # Fallback to local vector store if remote fails
+            return _search_local_knowledge_base(query)
+        
+        data = response.json()
+        results = data.get('results', [])
+        
+        if not results:
+            return "No relevant information found in the knowledge base. The user may need to upload documents first."
+        
+        # Format results
+        context_parts = []
+        for i, result in enumerate(results, 1):
+            source = result.get('source_file', 'Unknown')
+            page = result.get('page_number', '')
+            content = result.get('content', '')
+            page_info = f" (Page {page})" if page else ""
+            context_parts.append(f"[Source: {source}{page_info}]\n{content}")
+        
+        return "\n\n---\n\n".join(context_parts)
+    
+    except requests.exceptions.RequestException as e:
+        # Fallback to local vector store if network fails
+        print(f"Remote search failed, falling back to local: {e}")
+        return _search_local_knowledge_base(query)
+    except Exception as e:
+        return f"Error searching knowledge base: {str(e)}"
+
+
+def _search_local_knowledge_base(query: str) -> str:
+    """
+    Fallback: Search the local knowledge base.
+    
+    Args:
+        query: The user's question or search query
+        
+    Returns:
+        Relevant information from the local knowledge base
     """
     try:
         vector_store = get_vector_store()
@@ -66,7 +118,7 @@ def search_knowledge_base(query: str) -> str:
         return "\n\n---\n\n".join(context_parts)
     
     except Exception as e:
-        return f"Error searching knowledge base: {str(e)}"
+        return f"Error searching local knowledge base: {str(e)}"
 
 
 def create_booking(
